@@ -89,64 +89,6 @@ $(document).ready(function() {
 		alternatingTableCellColor();
 	})
 	//delete selected items
-	//modal box
-	$('.form-btn').on('click',function() {
-		$('.blackbox').css('display', 'block');
-		$('body').css('overflow','hidden');
-	})
-	$('#closebox').on('click',function(event) {
-		if(!$(event.target).is('.containerbox *')) {
-			$('.blackbox').css('display','none');
-			$('body').css('overflow','scroll');	
-		}
-	})
-	$('.submitbutton').on('click',function(event) {
-		$('.blackbox').css('display','none');
-		let inputCategory = $('.category').val();
-		let inputKey = $('.contentblock').val();
-		let inputValue = $('.contentblock').val();
-		let testValue = $('.contentblock').val().replace(/<.*>/g,'');
-		if(testValue === '') {
-			inputValue = '';
-		}
-		inputValue = inputValue.replace(/<br> */gm,'<br>');
-		inputValue = inputValue.replace(/<br>[\r?\n]*/g,'<br>');
-		inputValue = inputValue.replace(/[\r?\n]*/g,'');
-		if(inputValue.substr(-4) === '<br>') {
-  			inputValue = inputValue.slice(0,-4);
-		}
-		let date = moment().format("MMM Do YY");
-		let duedate = $('.user-input1').val() + 'T' + $('.user-input2').val();
-		if(inputValue == "" || inputValue == "\n" || inputValue == "\n\n" || inputValue == "\n\n\n") {
-		} else {
-			let x = 0;
-			while(localStorage.hasOwnProperty(x)) {
-				x = x + 1;
-			}
-			let item = JSON.stringify([inputCategory,inputValue,date,x,duedate]);
-			localStorage.setItem(x , item);
-			if(!moment(duedate).isValid()) {
-				duedate = '';
-			} else {
-				duedate = moment(item[4]).fromNow();
-			}
-			let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${inputCategory}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${moment().format("MMM Do YY")}<div></td></tr>`);
-			$('.displaycontents').append(itemHtml);
-		}
-		$('#modal').iziModal('close', {
-    		transition: 'bounceOutDown'
-		});
-		$('.contentblock').val('');
-		$('.category').val('');
-		alternatingTableCellColor();
-	});
-	$('body').on('keydown','.contentblock',function(event) {
-		if(event.keyCode == 13 && event.shiftKey) {
-			$('.contentblock').trigger('blur');
-			$('.submitbutton').trigger('click');
-		}
-	})
-	//modal box
 	//still making it
 	$('.trigger').on('click',function(event) {
 		$('#modal').iziModal('open', {

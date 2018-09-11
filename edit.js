@@ -81,9 +81,9 @@ $(document).ready(function() {
 		key = $(key).children().attr('id');
 		var item = JSON.parse(localStorage.getItem(key));
 		item[4] = value;
-		value = moment(value).fromNow();
 		item = JSON.stringify(item);
 		localStorage.setItem(key, item);
+		value = moment(value).isValid() ? moment(value).fromNow() : '';
 		$(element).html(`${value}<img class='editbutton' src='editbutton.png'>`)
 		$('.currentText').val('');
 	})

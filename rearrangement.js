@@ -22,3 +22,9 @@
 		$('.container.categoryX:even').css('background-color','rgb(150, 250, 200, 0.25)');
 	}
 	//alternating Table Cell Color
+	//input1 dates
+	$(document).ready(function() {
+		$('.user-input1').val(`${moment().format('YYYY-MM-DDTkk:mm:ss')}`);
+	})
+
+	//input1 dates
