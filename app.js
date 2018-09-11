@@ -4,27 +4,10 @@ $(document).ready(function() {
 	  $(".displaycontents").colResizable();
 	});
 	//resizable tables
-	//initialize izimodal
-	$('#modal').iziModal({
-		width: 700,
-	});
-	//initialize izimodal
 	//append items from storage to display format [category,content,date,x]
-	for(var key = 0; key < localStorage.length; key++) {
-		let item = JSON.parse(localStorage.getItem(key));
-		if(key !== undefined) {
-			let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${item[0]}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${key}'>${item[1]} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${item[2]}</div></td></tr>`);
-			$('.displaycontents').append(itemHtml);
-		}
-	}
+	rearrangement();
 	//append items from storage to display
 	//alternating table cell color
-	function alternatingTableCellColor() {
-		$('.containerX.display-item:odd').css('background-color','rgb(100, 200, 255, 0.25)');
-		$('.containerX.display-item:even').css('background-color','rgb(150, 250, 200, 0.25)');
-		$('.container.categoryX:odd').css('background-color','rgb(100, 200, 255, 0.25)');
-		$('.container.categoryX:even').css('background-color','rgb(150, 250, 200, 0.25)');
-	}
 	alternatingTableCellColor();
 	//alternating table cell color
 	//add items to the list
@@ -38,6 +21,8 @@ $(document).ready(function() {
 		let inputValue = $('.user-input').val();
 		inputValue = inputValue.replace(/<br>/g,'');
 		let inputKey = $('.user-input').val();
+		let duedate = $('.user-input1').val();
+		console.log(duedate);
 		if(inputValue == "") {
 			$('.user-input').val('');
 			return undefined;
@@ -47,9 +32,14 @@ $(document).ready(function() {
 			x = x + 1;
 		}
 		let date = moment().format("MMM Do YY");
-		let item = JSON.stringify(['',inputValue,date,x]);
+		let item = JSON.stringify(['',inputValue,date,x,duedate]);
 		localStorage.setItem(x,item);
-		let itemHtml = $(`<tr draggable='true'><td><div class='container categoryX'><img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${date}</div></td></tr>`);
+		if(!moment(duedate).isValid()) {
+			duedate = '';
+		} else {
+			duedate = moment(duedate).fromNow();
+		}
+		let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'><img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${date}</div></td></tr>`);
 		$('.displaycontents').append(itemHtml);
 		$('.user-input').val('');
 		alternatingTableCellColor();
@@ -122,21 +112,25 @@ $(document).ready(function() {
 		inputValue = inputValue.replace(/<br> */gm,'<br>');
 		inputValue = inputValue.replace(/<br>[\r?\n]*/g,'<br>');
 		inputValue = inputValue.replace(/[\r?\n]*/g,'');
-		console.log(inputValue);
 		if(inputValue.substr(-4) === '<br>') {
   			inputValue = inputValue.slice(0,-4);
-  			console.log(inputValue);
 		}
 		let date = moment().format("MMM Do YY");
+		let duedate = $('.user-input1').val() + 'T' + $('.user-input2').val();
 		if(inputValue == "" || inputValue == "\n" || inputValue == "\n\n" || inputValue == "\n\n\n") {
 		} else {
 			let x = 0;
 			while(localStorage.hasOwnProperty(x)) {
 				x = x + 1;
 			}
-			let item = JSON.stringify([inputCategory,inputValue,date,x]);
+			let item = JSON.stringify([inputCategory,inputValue,date,x,duedate]);
 			localStorage.setItem(x , item);
-			let itemHtml = $(`<tr draggable='true'><td><div class='container categoryX'>${inputCategory}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${moment().format("MMM Do YY")}<div></td></tr>`);
+			if(!moment(duedate).isValid()) {
+				duedate = '';
+			} else {
+				duedate = moment(item[4]).fromNow();
+			}
+			let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${inputCategory}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${moment().format("MMM Do YY")}<div></td></tr>`);
 			$('.displaycontents').append(itemHtml);
 		}
 		$('#modal').iziModal('close', {
@@ -160,45 +154,6 @@ $(document).ready(function() {
 		});
 	});
 	//still making it
-	//edit button
-	$('body').on('click','.editbutton',function(event) {
-		let edit = $(event.target).parent('div');
-		let key = $(edit).attr('id');
-		$(edit).html(`<input type='text' class='currentText'></input>`)
-		$('.currentText').focus();
-	});
-	$('body').on('keyup','.currentText',function(event) {
-		let e = event.which;
-		if(e == 13) {
-			$('.currentText').trigger('focusout');
-		}
-	});
-	$('body').on('focusout','.currentText',function(event) {
-		let value = $('.currentText').val();
-		if($('.currentText').parent().attr('class') === 'container categoryX') {
-			var key = $('.currentText').parents('tr').children()[1];
-			var element = $('.currentText').parents('tr').children()[0];
-			element = $(element).children();
-			key = $(key).children().attr('id');
-			var item = JSON.parse(localStorage.getItem(key));
-			item[0] = value;
-		} else {
-			var key = $('.currentText').parent().attr('id');
-			var element = $('.currentText').parent();
-			var item = JSON.parse(localStorage.getItem(key));
-			if(value == "") {
-				$(element).html(`${item[1]}<img class='editbutton' src='editbutton.png'>`)
-				return undefined;
-			} else {
-				item[1] = value;
-			}	
-		}
-		item = JSON.stringify(item);
-		localStorage.setItem(key, item);
-		$(element).html(`${value}<img class='editbutton' src='editbutton.png'>`)
-		$('.currentText').val('');
-	});
-	//edit button
 	//escape to deselect all
 	$('html').on('keyup',function(event) {
 		if(event.keyCode === 27) {

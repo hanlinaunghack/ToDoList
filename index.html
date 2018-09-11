@@ -20,86 +20,49 @@
 <link rel="stylesheet" type="text/css" href="iziModal.css">
 <script type='text/javascript' src="colResizable.js"></script>
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
-<script>
-		//drag and drop events
-	function drag(event) {
-		let i = [event.target.children[1].children[0].id];
-		let x = Array.from(document.getElementsByClassName('selected')).map(e=>e.id);
-		i = i.concat(x);
-		i.sort((a,b) => a-b);
-		i = Array.from(new Set(i));
-	    event.dataTransfer.setData("text", i);
-	};
-	function allowDrop(ev) {
-	    ev.preventDefault();
-	}
-	function drop(ev) {
-		ev.preventDefault();
-    	var data = ev.dataTransfer.getData("text").split(',');
-    	let data1 = $(ev.target)[0].id;
-    	if(!data1) {
-    		data1 = $(ev.target).parents('tr')[0].children[1].children[0].id;
-    	}
-    	if(data.indexOf(data1) > -1) {
-    		return undefined;
-    	} else {
-			rearrangement(data,data1);    		
-    	}
-		$('.containerX.display-item:odd').css('background-color','rgb(100, 200, 255, 0.25)');
-		$('.containerX.display-item:even').css('background-color','rgb(150, 250, 200, 0.25)');
-		$('.container.categoryX:odd').css('background-color','rgb(100, 200, 255, 0.25)');
-		$('.container.categoryX:even').css('background-color','rgb(150, 250, 200, 0.25)');
-    	//ev.target.append(document.getElementById(data));
-	}
-	function rearrangement(key1,key2) {
-		let arra = [];
-		key1 = key1.map(e => Number(e));
-		let data1 = JSON.parse(localStorage.getItem(key2))[3];
-		for(let i = 0 ; i < localStorage.length ; i++) {
-			if(key1.indexOf(i) > -1) {
-
-			} else if (JSON.parse(localStorage.getItem(i))[3] === data1) {
-				key1.forEach(function(element) {
-					arra.push(JSON.parse(localStorage.getItem(element)));
-				})
-				arra.push(JSON.parse(localStorage.getItem(i)));
-			} else {
-				arra.push(JSON.parse(localStorage.getItem(i)));
-			}
-		}
-		localStorage.clear();
-		for(let i = 0; i < arra.length; i++) {
-			arra[i][3] = i;
-			localStorage.setItem(i,JSON.stringify(arra[i]));
-		}
-		$('.displaycontents').html(`<tr><th style='width:20%;' class='headings'>Category</th><th style='width:70%;' class='headings'>Content</th><th style='width:10%;' class='headings'>Date</th></tr>`)
-		let localKey = Object.keys(localStorage);
-		localKey.forEach(function(element) {
-			let item = JSON.parse(localStorage.getItem(element));
-			if(element !== undefined) {
-				let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${item[0]}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${element}'>${item[1]} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${item[2]}</div></td></tr>`);
-				$('.displaycontents').append(itemHtml);
-			}
-		})	
-	};
-	//drag and drop events
-</script>
+<script type='text/javascript' src='dragAndDrop.js'></script>
 </head>
 <body>
 <script type='text/javascript' src="iziModal.js"></script>
-<script src='app.js'></script>
-	<div id='modal' class='iziModal'>
+<script type='text/javascript' src='app.js'></script>
+<script type='text/javascript' src='rearrangement.js'></script>
+<script type='text/javascript' src='edit.js'></script>
+	<div id='modal' class='iziModal modal-background'>
+		<div class='blackbox'>
 		<div class='popupbox'>
-			<div class='contents col-8'><h3>Content</h3><textarea style='resize:none;height:350px;width:350px;' input='text' class='contentblock' placeholder='type your content here'></textarea></div>
-			<div class='contents col-4'><h3>Category</h3><input class='category' type='text' placeholder='type your category here' style='width:200px;'/><br><hr>
+			<div class='contents col-7'><h3>Content</h3><textarea style='resize:none;height:300px;width:350px;' input='text' class='contentblock' placeholder='type your content here'></textarea></div>
+			<div class='contents col-5'><h3>Category</h3><input class='category' type='text' placeholder='type your category here' style='width:200px;'/><br>
+				<hr>
 				<h3>Options:</h3>
 				<code>&lt;br&gt;: new line.<br>&lt;b&gt;: bold<br>&lt;em&gt;: italics.<br>&lt;sub&gt;: Subscript text.<br>&lt;sup&gt;: Superscript text.</code>
-				<br><button class='submitbutton'>Submit</button>
 			</div>		
 		</div>
+		<div class='popupbox1'>Due date: <input type='date' class='contentblock1' name='duedate'> Time: <input type='time' class='contentblock2' name='duetime'> <button class='submitbutton'>Submit</button></div>
+		</div>
 	</div>
-	<div class='container'>
-		<input type='text' class='user-input'>
+	<div id='category-confirm-modal' class='iziModal modal-background'>
+		<h3 style='margin:20px'>Are you sure you want to change the category?</h3>
+		<div style='margin:20px;display:flex;justify-content:space-around;'>
+			<button class='category btn btn-danger'>cancel</button>
+			<button class='category btn btn-success'>YES!</button>
+		</div>
+	</div>
+	<div id='content-confirm-modal' class='iziModal modal-background'>
+		<h3 style='margin:20px'>Are you sure you want to change the content?</h3>
+		<div style='margin:20px;display:flex;justify-content:space-around;'>
+			<button class='content btn btn-danger'>cancel</button>
+			<button class='content btn btn-success'>YES!</button>
+		</div>
+	</div>
+	<div id='date-confirm-modal' class='iziModal modal-background'>
+		<h3 style='margin:20px'>Are you sure you want to change the due date?</h3>
+		<div style='margin:20px;display:flex;justify-content:space-around;'>
+			<button class='date btn btn-danger'>cancel</button>
+			<button class='date btn btn-success'>YES!</button>
+		</div>
+	</div>
+	<div class='container-input'>
+		Type your content here: <input type='text' class='user-input'> Due Date: <input type='datetime-local' class='user-input1' name='duedate'>
 		<button class='add-text-btn'>Add Item</button>
 		<button class='sel-all-btn'>Select All</button>
 		<button class='de-sel-all-btn'>Deselect All</button>
@@ -110,9 +73,10 @@
 	<div class='display'>
 		<table class='displaycontents'>
 			<tr>
-				<th style='width:20%;' class='headings'>Category</th>
-				<th style='width:70%;' class='headings'>Content</th>
-				<th style='width:10%;' class='headings'>Date</th>
+				<th style='width:15%;' class='headings'>Category</th>
+				<th style='width:55%;' class='headings'>Content</th>
+				<th style='width:20%;' class='headings'>Due Date</th>
+				<th style='width:10%;' class='headings'>Added Date</th>
 			</tr>
 		</table>
 	</div>
