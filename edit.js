@@ -24,8 +24,23 @@ $(document).ready(function() {
 		radius: 20,
 		background: 'rgb(130, 250, 255)',
 	})
+	$('#import-modal').iziModal({
+		width: 500,
+		height: 300,
+		radius: 20,
+		background: 'rgb(130, 250, 255)',
+	})
+	$('#clear-storage-warning').iziModal({
+		width: 500,
+		height: 300,
+		radius: 20,
+		background: 'rgb(130, 250, 255)',
+	})
 	//initialize izimodal
 	//edit modal
+	$('.import').on('click',function(event) {
+		$('#import-modal').iziModal('open')
+	})
 	$('body').on('focusout','.currentText',function(event) {
 		let value = $('.currentText').val();
 		if($('.currentText').parent().attr('class') === 'container categoryX') { //category

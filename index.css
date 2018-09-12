@@ -85,3 +85,6 @@ img:hover {
 div {
 	user-select: none;
 }
+#clear-storage-warning .btn{
+	justify-content: center;
+}

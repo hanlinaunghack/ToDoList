@@ -35,7 +35,7 @@
 	}
 	//alternating Table Cell Color
 	//localStorage rearrangement
-		function localStorageRearrangement(key1,key2) {
+	function localStorageRearrangement(key1,key2) {
 		let arra = [];
 		key1 = key1.map(e => Number(e));
 		let data1 = JSON.parse(localStorage.getItem(key2))[3];

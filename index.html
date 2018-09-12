@@ -21,6 +21,7 @@
 <script type='text/javascript' src="colResizable.js"></script>
 <link rel="stylesheet" href="http://netdna.bootstrapcdn.com/font-awesome/4.6.2/css/font-awesome.min.css">
 <script type='text/javascript' src='dragAndDrop.js'></script>
+<script type='text/javascript' src='headinputfunctions.js'></script>
 </head>
 <body>
 <script type='text/javascript' src="iziModal.js"></script>
@@ -62,6 +63,19 @@
 			<button class='date btn btn-success'>YES!</button>
 		</div>
 	</div>
+	<div id='clear-storage-warning' class='iziModal modal-background'>
+		<h3 style='margin:20px'>This will clear your current data and replace it with this file. Are you sure you want to continue?</h3><br>
+		<div style='margin:20px;display:flex;justify-content:space-around;'>
+		<button class='btn btn-danger' onclick='$("#clear-storage-warning").iziModal("close");'>cancel</button>
+		<button class='btn btn-success' onclick='handleFileSelect();'>YES!</button>
+		</div>
+	</div>
+	<div id='import-modal' class='iziModal modal-background'>
+		<div style='margin:20px;display:flex;justify-content:space-around;'>
+		<input type="file" id="fileinput"/>
+		<input type='button' id='btnLoad' value='Import' onclick='$("#import-modal").iziModal("close");$("#clear-storage-warning").iziModal("open");'/>
+		</div>
+	</div>
 	<div class='container-input'>
 		Type your content here: <input type='text' class='user-input'> Due Date: <input type='datetime-local' class='user-input1' name='duedate'>
 		<button class='add-text-btn'>Add Item</button>
@@ -69,6 +83,8 @@
 		<button class='de-sel-all-btn'>Deselect All</button>
 		<button class='del-text-btn'>Delete Item</button>
 		<button class='trigger'>Form</button>
+	  	<button class='export'>Export</button>
+	  	<button class='import'>Import</button>
 	</div>
 	<br><hr><br>
 	<div class='display'>
@@ -81,7 +97,6 @@
 			</tr>
 		</table>
 	</div>
-
 
 	<!--MODALS BOOTSTRAP -->
 	<!--	Modal HTML embedded directly into document

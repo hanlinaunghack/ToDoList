@@ -103,5 +103,48 @@ $(document).ready(function() {
 		}
 	});
 	//escape to deselectall
-
+	//export items
+	$('.export').on('click',function(event) {
+		var localStorageX = JSON.stringify(localStorage);
+		console.log(localStorageX);
+		var link = document.createElement('a');
+		link.setAttribute('download', 'export.txt');
+    	link.setAttribute('href', 'data:text/plain'  +  ';charset=utf-8,' + encodeURIComponent(localStorageX));
+    	link.click();
+	});
+	//export items
+	//read files
+	$('body').on('click','#file-input-submit',function() {
+		$('#import-modal').iziModal('close');
+		var inputFile = $('#file-input').val();
+		var file = new File([""],inputFile);
+		file.open('r');
+		var str = "";
+		while (!file.eof) {
+			// read each line of text
+			str += file.readln() + "\n";
+		}
+		file.close();
+		console.log(str);
+/*		
+		function readTextFile(file) {
+		    var rawFile = new XMLHttpRequest();
+		    rawFile.open("GET", file, false);
+		    rawFile.onreadystatechange = function ()
+		    {
+		        if(rawFile.readyState === 4)
+		        {
+		            if(rawFile.status === 200 || rawFile.status == 0)
+		            {
+		                var allText = rawFile.responseText;
+		                alert(allText);
+		            }
+		        }
+		    }
+		    rawFile.send(null);
+		}
+		let x = readTextFile('import=export.txt');
+		console.log(x);*/
+	})
+	//read files
 })
