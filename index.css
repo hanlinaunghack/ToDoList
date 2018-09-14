@@ -1,6 +1,5 @@
 .containerX.selected {
 	border: 2px red solid;
-	color: blue;
 }
 .containerX.display-item {
 	margin: 1px 10px;
@@ -87,4 +86,33 @@ div {
 }
 #clear-storage-warning .btn{
 	justify-content: center;
+}
+.search-category-container {
+	display: block;
+	position: relative;
+	float: right;
+}
+.dropdown-options {
+	display: none;
+	position: absolute;
+	width: 100%;
+	height: auto;
+	z-index: 2;
+}
+.category-item {
+	display: block;
+	width: 100%;
+	background-color: white;
+	padding: 2px;
+	padding-left: 5px;
+}
+.category-item:hover {
+	cursor: pointer;
+	border: 1px solid red;
+}
+.priority {
+	text-align: center;
+}
+.priority:hover {
+	cursor: text;
 }

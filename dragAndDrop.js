@@ -56,13 +56,13 @@
 			arra[i][3] = i;
 			localStorage.setItem(i,JSON.stringify(arra[i]));
 		}
-		$('.displaycontents').html(`<tr><th style='width:15%;' class='headings'>Category</th><th style='width:55%;' class='headings'>Content</th><th style='width:20%' class='headings'>Due Date</th><th style='width:10%;' class='headings'>Date</th></tr>`)
-		let localKey = Object.keys(localStorage);
-		localKey.forEach(function(element) {
+		    $('.displaycontents').html(`<tr><th style='width:10%;' class='headings'>Category</th><th style='width:48%;' class='headings'>Content</th><th style='width:15' class='headings'>Priority</th><th style='width:17%' class='headings'>Due Date</th><th style='width:10%;' class='headings'>Added Date</th></tr>`);
+		    let localKey = Object.keys(localStorage);
+			localKey.forEach(function(element) {
 			let item = JSON.parse(localStorage.getItem(element));
 			let duedate = moment(item[4]).isValid() ? moment(item[4]).fromNow() : "";
 			if(element !== undefined) {
-				let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${item[0]}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${element}'>${item[1]} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${duedate}</div></td><td><div class='container date'>${item[2]}</div></td></tr>`);
+				let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${item[0]}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${element}' style='color:${item[6]}'>${item[1]} <img class='editbutton' src='editbutton.png'></div></td><td><div class='priority'>${item[5]}</div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${item[2]}</div></td></tr>`);
 				$('.displaycontents').append(itemHtml);
 			}
 		})	

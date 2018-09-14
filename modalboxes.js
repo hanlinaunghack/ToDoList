@@ -7,6 +7,7 @@ $(document).ready(function() {
 		let inputKey = $('.contentblock').val();
 		let inputValue = $('.contentblock').val();
 		let testValue = $('.contentblock').val().replace(/<.*>/g,'');
+		let color = $('.input-color').val();
 		if(testValue === '') {
 			inputValue = '';
 		}
@@ -22,10 +23,10 @@ $(document).ready(function() {
 		while(localStorage.hasOwnProperty(x)) {
 			x = x + 1;
 		}
-		let item = JSON.stringify([inputCategory,inputValue,date,x,duedate]);
+		let item = JSON.stringify([inputCategory,inputValue,date,x,duedate,0,color]);
 		localStorage.setItem(x , item);
 		duedate = moment(duedate).isValid() ? moment(duedate).fromNow() : '';
-		let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${inputCategory}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${moment().format("MMM Do YY")}<div></td></tr>`);
+		let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${inputCategory}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}' style='color:${color}'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='priority'>0<div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${moment().format("MMM Do YY")}<div></td></tr>`);
 		$('.displaycontents').append(itemHtml);
 		$('#modal').iziModal('close', {
     		transition: 'bounceOutDown'

@@ -13,6 +13,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.7/c3.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.6.7/c3.css"></script>
 <script src="moment.js"></script>
@@ -29,6 +30,7 @@
 <script type='text/javascript' src='rearrangement.js'></script>
 <script type='text/javascript' src='edit.js'></script>
 <script type='text/javascript' src='modalboxes.js'></script>
+<script type='text/javascript' src="deletecolorchangepriority.js"></script>
 	<div id='modal' class='iziModal modal-background'>
 		<div class='blackbox'>
 		<div class='popupbox'>
@@ -76,23 +78,32 @@
 		<input type='button' id='btnLoad' value='Import' onclick='$("#import-modal").iziModal("close");$("#clear-storage-warning").iziModal("open");'/>
 		</div>
 	</div>
-	<div class='container-input'>
-		Type your content here: <input type='text' class='user-input'> Due Date: <input type='datetime-local' class='user-input1' name='duedate'>
+	<div class='container-input' style='padding:20px;display:inline-flex;'>
+		Type your content here: <input type='text' class='user-input' placeholder='content...' style='margin:0px 15px;'> Due Date: <input type='datetime-local' class='user-input1' name='duedate' style='margin:0px 15px;'>
 		<button class='add-text-btn'>Add Item</button>
 		<button class='sel-all-btn'>Select All</button>
 		<button class='de-sel-all-btn'>Deselect All</button>
+		<div style='width:80px;height:auto;display:inline-flex;position:relative;'><input type='color' class='color-input' style='width:100%;height:100%;'/></div>
 		<button class='del-text-btn'>Delete Item</button>
 		<button class='trigger'>Form</button>
 	  	<button class='export'>Export</button>
 	  	<button class='import'>Import</button>
-	</div>
-	<br><hr><br>
+	  	<div class='search-category-container'>
+		  	<div style='display:inline-flex;'>
+		      <input type="text" placeholder="Search Category" id='search-category'>
+		      <button type="submit" id='search-category-btn'><i class="fa fa-search"></i></button>
+		  	</div> <br>
+	  		<div class='dropdown-options'>
+		  	</div>
+  		</div>
+	</div><hr>
 	<div class='display'>
 		<table class='displaycontents'>
 			<tr>
-				<th style='width:15%;' class='headings'>Category</th>
-				<th style='width:55%;' class='headings'>Content</th>
-				<th style='width:20%;' class='headings'>Due Date</th>
+				<th style='width:10%;' class='headings'>Category</th>
+				<th style='width:48%;' class='headings'>Content</th>
+				<th style='width:15%;' class='headings'>Priority</th>
+				<th style='width:17%;' class='headings'>Due Date</th>
 				<th style='width:10%;' class='headings'>Added Date</th>
 			</tr>
 		</table>

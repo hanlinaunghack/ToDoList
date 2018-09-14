@@ -8,7 +8,7 @@
 				} else {
 					var duedate = moment(item[4]).fromNow();
 				}
-				let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${item[0]}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${key}'>${item[1]} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${item[2]}</div></td></tr>`);
+				let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${item[0]}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${key}' style='color:${item[6]}'>${item[1]} <img class='editbutton' src='editbutton.png'></div></td><td><div class='priority'>${item[5]}</div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${item[2]}</div></td></tr>`);
 				$('.displaycontents').append(itemHtml);
 			}
 		}

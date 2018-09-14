@@ -28,12 +28,14 @@
     let loc = JSON.parse(fr.result);
     localStorage.clear();
     for(var key in loc) {
-      if (typeof Number(key) !== 'number') {
+      if (typeof Number(key) !== 'number' || Number(key) === NaN) {
         console.log('error');
       } else {
         localStorage.setItem(key , loc[key]);
       }
     }
-  	console.log(loc);
+    $('.displaycontents').html(`<tr><th style='width:10%;' class='headings'>Category</th><th style='width:48%;' class='headings'>Content</th><th style='width:15' class='headings'>Priority</th><th style='width:17%' class='headings'>Due Date</th><th style='width:10%;' class='headings'>Added Date</th></tr>`)
+    rearrangement();
+    alternatingTableCellColor();
     //document.getElementById('editor').appendChild(document.createTextNode(fr.result));
   }  

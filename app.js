@@ -22,7 +22,7 @@ $(document).ready(function() {
 		inputValue = inputValue.replace(/<br>/g,'');
 		let inputKey = $('.user-input').val();
 		let duedate = $('.user-input1').val();
-		console.log(duedate);
+		let color = $('.color-input').val();
 		if(inputValue == "") {
 			$('.user-input').val('');
 			return undefined;
@@ -32,14 +32,14 @@ $(document).ready(function() {
 			x = x + 1;
 		}
 		let date = moment().format("MMM Do YY");
-		let item = JSON.stringify(['',inputValue,date,x,duedate]);
+		let item = JSON.stringify(['',inputValue,date,x,duedate,0,color]);
 		localStorage.setItem(x,item);
 		if(!moment(duedate).isValid()) {
 			duedate = '';
 		} else {
 			duedate = moment(duedate).fromNow();
 		}
-		let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'><img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${date}</div></td></tr>`);
+		let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'><img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${x}' style='color:${color};'>${inputValue} <img class='editbutton' src='editbutton.png'></div></td><td><div class='priority'>0</div></td><td><div class='container date'>${duedate}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${date}</div></td></tr>`);
 		$('.displaycontents').append(itemHtml);
 		$('.user-input').val('');
 		alternatingTableCellColor();
@@ -80,15 +80,6 @@ $(document).ready(function() {
 		}	
 	}
 	//reorganize localStorage
-	//delete selected items
-	$('.del-text-btn').on('click',function() {
-		var x = Array.from(document.getElementsByClassName('selected'));
-		x.forEach(element => $(element.parentElement.parentElement).remove());
-		x.map(element => element.id).forEach(element => localStorage.removeItem(element));
-		reorganizeLocalStorage();
-		alternatingTableCellColor();
-	})
-	//delete selected items
 	//still making it
 	$('.trigger').on('click',function(event) {
 		$('#modal').iziModal('open', {
@@ -106,45 +97,103 @@ $(document).ready(function() {
 	//export items
 	$('.export').on('click',function(event) {
 		var localStorageX = JSON.stringify(localStorage);
-		console.log(localStorageX);
 		var link = document.createElement('a');
 		link.setAttribute('download', 'export.txt');
     	link.setAttribute('href', 'data:text/plain'  +  ';charset=utf-8,' + encodeURIComponent(localStorageX));
     	link.click();
 	});
 	//export items
-	//read files
-	$('body').on('click','#file-input-submit',function() {
-		$('#import-modal').iziModal('close');
-		var inputFile = $('#file-input').val();
-		var file = new File([""],inputFile);
-		file.open('r');
-		var str = "";
-		while (!file.eof) {
-			// read each line of text
-			str += file.readln() + "\n";
+	//search category
+	$('#search-category').on('focusin',function(event) {
+		$('.dropdown-options').css('display','block');
+		$('.dropdown-options').html('');
+		let categoryX = [];
+		let keys = Object.keys(localStorage);
+		keys.forEach(function(e) {
+			categoryX.push(JSON.parse(localStorage.getItem(e)));
+		})
+		if($('#search-category').val() === "") {
+			categoryY = categoryX.map(e => e[0]).sort();
+		} else {
+			var filter = $('#search-category').val();
+			categoryY = categoryX.map(e => e[0]).filter(e => e === filter);
 		}
-		file.close();
-		console.log(str);
-/*		
-		function readTextFile(file) {
-		    var rawFile = new XMLHttpRequest();
-		    rawFile.open("GET", file, false);
-		    rawFile.onreadystatechange = function ()
-		    {
-		        if(rawFile.readyState === 4)
-		        {
-		            if(rawFile.status === 200 || rawFile.status == 0)
-		            {
-		                var allText = rawFile.responseText;
-		                alert(allText);
-		            }
-		        }
-		    }
-		    rawFile.send(null);
+		categoryY = Array.from(new Set(categoryY));
+		if(categoryY.length > 0) {
+			for(var i = 0 ; i < categoryY.length ; i++) {
+				if(categoryY[i] !== "") {
+					let x = $(`<div class='category-item'>${categoryY[i]}</div>`);
+					$('.dropdown-options').append(x);
+				};
+			};
+		};
+	});
+	$('#search-category').on('keyup',function(event) {
+		$('.dropdown-options').html('');
+		if(event.keyCode === 13) {
+			$('#search-category-btn').trigger('click');
+		} else {
+			let val = $('#search-category').val();
+			let categoryX = [];
+			let keys = Object.keys(localStorage);
+			keys.forEach(function(e) {
+				categoryX.push(JSON.parse(localStorage.getItem(e)));
+			})
+			categoryY = categoryX.map(e => e[0]).filter(e => e.indexOf(val) > -1);
+			categoryY = Array.from(new Set(categoryY));
+			if(categoryY.length > 0) {
+				for(var i = 0 ; i < categoryY.length ; i++) {
+					if(categoryY[i] !== "") {
+						let x = $(`<div class='category-item'>${categoryY[i]}</div>`);
+						$('.dropdown-options').append(x);
+					};
+				};
+			};
+		};
+	});
+	$('html').on('click',function(event) {
+		if(!$(event.target).parents().hasClass('search-category-container')) {		
+			$('.dropdown-options').css('display','none');	
 		}
-		let x = readTextFile('import=export.txt');
-		console.log(x);*/
 	})
-	//read files
+	$('body').on('click','.category-item',function(event) {
+		let x = event.target.innerText;
+		$('#search-category').val(x);
+		$('.dropdown-options').css('display','none');	
+	})
+	$('#search-category-btn').on('click',function(event) {
+		$('.dropdown-options').css('display','none');
+		$('#search-category').blur();
+		let val = $('#search-category').val();
+		let categoryX = [];
+		let keys = Object.keys(localStorage);
+		keys.forEach(function(e) {
+			categoryX.push(JSON.parse(localStorage.getItem(e)));
+		})
+		if(val === '') {
+			categoryY = categoryX.filter(e => e[0] === '');
+		} else {
+			categoryY = categoryX.filter(e => e[0].indexOf(val) > -1);
+		}
+		if(categoryY.length > 0) {
+			    $('.displaycontents').html(`<tr><th style='width:10%;' class='headings'>Category</th><th style='width:48%;' class='headings'>Content</th><th style='width:15' class='headings'>Priority</th><th style='width:17%' class='headings'>Due Date</th><th style='width:10%;' class='headings'>Added Date</th></tr>`)
+			    for(var i = 0 ; i < categoryY.length ; i++) {
+				if(categoryY[i] !== "") {
+					let itemHtml = $(`<tr draggable='true' ondragstart='drag(event)' ondrop='drop(event)' ondragover='allowDrop(event)'><td><div class='container categoryX'>${categoryY[i][0]}<img class='editbutton' src='editbutton.png'></div></td><td><div class='containerX display-item' id='${categoryY[i][3]}' style='color:${categoryY[i][6]}'>${categoryY[i][1]} <img class='editbutton' src='editbutton.png'></div></td><td><div class='priority'>${categoryY[i][5]}</div></td><td><div class='container date'>${moment(categoryY[i][4]).fromNow()}<img class='editbutton' src='editbutton.png'></div></td><td><div class='container date'>${categoryY[i][2]}</div></td></tr>`);
+					$('.displaycontents').append(itemHtml);
+				};
+			};
+		} else {
+			$('.displaycontents').html('<div>No result found.</div>')
+		};
+		$('.displaycontents').append($(`<div style='display:flex;justify-content:center;width:1950px;padding:50px;'><button id='back-button' style='width:200px'>back</button></div>`))
+		alternatingTableCellColor();
+		$('#search-category').val('');
+	})
+	$('body').on('click','#back-button',function(event) {
+		    $('.displaycontents').html(`<tr><th style='width:10%;' class='headings'>Category</th><th style='width:48%;' class='headings'>Content</th><th style='width:15' class='headings'>Priority</th><th style='width:17%' class='headings'>Due Date</th><th style='width:10%;' class='headings'>Added Date</th></tr>`)
+		    rearrangement();
+		alternatingTableCellColor();
+	})
+	//search category
 })
